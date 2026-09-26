@@ -1,0 +1,2313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sachin Burman</title>
+    <link rel="icon" type="image/png" href="/colored-logo.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --sidebar-bg: #131d33;
+            --card-bg: #1e293b;
+            --input-bg: #0b1120;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --danger: #ef4444;
+            --success: #22c55e;
+            --border: rgba(255, 255, 255, 0.08);
+            --transition: all 0.25s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- TOP HEADER --- */
+        header {
+            height: 65px;
+            background: var(--sidebar-bg);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 8px var(--success);
+        }
+
+        .status-badge.offline {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+        .status-badge.offline .status-dot {
+            background: var(--danger);
+            box-shadow: 0 0 8px var(--danger);
+        }
+
+        .btn-back {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+        }
+        .btn-back:hover {
+            color: var(--accent);
+        }
+
+        .btn-account {
+            background: rgba(56, 189, 248, 0.12);
+            border: 1px solid rgba(56, 189, 248, 0.28);
+            color: var(--accent);
+            padding: 7px 12px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .btn-account:hover { background: rgba(56, 189, 248, 0.22); }
+
+        #authGate {
+            position: fixed;
+            inset: 0;
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: radial-gradient(circle at top right, rgba(56,189,248,0.16), transparent 38%), #08111f;
+        }
+
+        #authGate { display: none !important; }
+
+        #authGate.hidden { display: none; }
+
+        .auth-card {
+            width: min(100%, 430px);
+            padding: 34px;
+            background: rgba(30, 41, 59, 0.96);
+            border: 1px solid rgba(56, 189, 248, 0.24);
+            border-radius: 16px;
+            box-shadow: 0 24px 70px rgba(0,0,0,0.45);
+        }
+
+        .auth-mark {
+            width: 56px;
+            height: 56px;
+            display: grid;
+            place-items: center;
+            margin-bottom: 18px;
+            border-radius: 14px;
+            background: rgba(56, 189, 248, 0.14);
+            color: var(--accent);
+            font-size: 1.5rem;
+        }
+
+        .auth-card h1 { font-size: 1.6rem; margin-bottom: 8px; }
+        .auth-card p { color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 24px; }
+        .auth-card .form-group { margin-bottom: 15px; }
+        .auth-error { min-height: 22px; color: #f87171; font-size: 0.82rem; margin-top: 12px; }
+
+        .auth-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .auth-back:hover { color: var(--accent); }
+
+        .auth-links {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 18px;
+        }
+
+        .auth-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 0;
+            border: 0;
+            background: transparent;
+            color: var(--text-secondary);
+            font: inherit;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .auth-action:hover { color: var(--accent); }
+
+        @media (max-width: 480px) {
+            .auth-links { align-items: flex-start; flex-direction: column; gap: 12px; }
+        }
+
+        #accountModal { display: none; }
+        #accountModal.active { display: flex; }
+
+        /* --- DASHBOARD LAYOUT --- */
+        .admin-layout {
+            display: flex;
+            flex: 1;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 25px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.95rem;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item i {
+            font-size: 1.1rem;
+            width: 20px;
+        }
+
+        .nav-item:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .nav-item.active {
+            color: var(--accent);
+            background: rgba(56, 189, 248, 0.08);
+            border-left-color: var(--accent);
+            font-weight: 600;
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            background: var(--card-bg);
+            color: var(--text-secondary);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            padding: 30px 40px;
+            overflow-y: auto;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+        .tab-panel.active {
+            display: block;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .panel-header h2 {
+            font-size: 1.6rem;
+            font-weight: 600;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #0f172a;
+            font-weight: 600;
+        }
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.35);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-ml {
+            background: rgba(129, 140, 248, 0.15);
+            color: #a5b4fc;
+            border: 1px solid rgba(129, 140, 248, 0.3);
+            padding: 6px 14px;
+            font-size: 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-ml:hover {
+            background: #818cf8;
+            color: #0f172a;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            border-radius: 6px;
+        }
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        .btn-danger:hover {
+            background: var(--danger);
+            color: #ffffff;
+        }
+
+        /* Forms & Cards */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        input, select, textarea {
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+        }
+
+        /* Tables */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: #162032;
+            padding: 14px 18px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-primary);
+            vertical-align: middle;
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .tag-pill {
+            display: inline-block;
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--accent);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin: 2px;
+        }
+
+        .badge-cat {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: rgba(129, 140, 248, 0.15);
+            color: #a5b4fc;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 30px;
+        }
+
+        .crop-modal-card {
+            max-width: 470px;
+        }
+
+        .logo-crop-canvas {
+            display: block;
+            width: min(320px, 100%);
+            height: auto;
+            margin: 0 auto 20px;
+            background: #0b1120;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            cursor: grab;
+            touch-action: none;
+        }
+
+        .logo-crop-canvas:active {
+            cursor: grabbing;
+        }
+
+        .crop-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .crop-controls input[type="range"] {
+            flex: 1;
+            accent-color: var(--accent);
+        }
+
+        .crop-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* Toast */
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: var(--accent);
+            color: #0f172a;
+            font-weight: 600;
+            text-align: center;
+            border-radius: 8px;
+            padding: 14px 24px;
+            position: fixed;
+            z-index: 2000;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            transition: var(--transition);
+        }
+
+        #toast.show {
+            visibility: visible;
+            animation: fadeInOut 3.2s forwards;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; bottom: 10px; }
+            15% { opacity: 1; bottom: 30px; }
+            85% { opacity: 1; bottom: 30px; }
+            100% { opacity: 0; bottom: 10px; }
+        }
+
+        @media (max-width: 768px) {
+            .admin-layout {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                flex-direction: row;
+                overflow-x: auto;
+                padding: 10px;
+            }
+            .main-content {
+                padding: 20px 15px;
+            }
+            header { padding: 0 15px; }
+            .header-actions { gap: 8px; }
+            .status-badge { max-width: 150px; overflow: hidden; white-space: nowrap; }
+            .btn-account { padding: 7px 9px; }
+            .btn-back { font-size: 0; gap: 0; }
+            .btn-back i { font-size: 1rem; }
+            .sidebar { scrollbar-width: thin; }
+            .nav-item { flex: 0 0 auto; padding: 11px 14px; white-space: nowrap; }
+            .card { padding: 18px; }
+            .form-grid { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+            .form-group.full-width { grid-column: auto; }
+            .table-wrapper { max-width: 100%; }
+        }
+
+        @media (max-width: 480px) {
+            header { height: 58px; }
+            .header-actions .status-badge { display: none; }
+            .logo { font-size: 1.15rem; }
+            .sidebar { padding: 7px; }
+            .nav-item { font-size: 0.78rem; gap: 7px; padding: 9px 10px; }
+            .nav-badge { display: none; }
+            .main-content { padding: 16px 10px; }
+            .panel-header h2 { font-size: 1.35rem; }
+            .card { border-radius: 9px; padding: 15px; }
+            .btn { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <span>Sachin<span style="color:var(--accent);">.</span></span>
+        </div>
+        <div class="header-actions">
+            <div class="status-badge" id="backendStatus">
+                <span class="status-dot"></span>
+                <span id="backendStatusText">Connecting...</span>
+            </div>
+            <span class="btn-account"><i class="fa-solid fa-globe"></i> Public access</span>
+            <a href="/" class="btn-back" aria-label="Return to main page" title="Return to main page">
+                <i class="fa-solid fa-arrow-left"></i> Back
+            </a>
+        </div>
+    </header>
+
+    <!-- Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <div class="nav-item active" onclick="switchTab('profile')">
+                <i class="fa-solid fa-pen-to-square"></i> Edit Profile
+            </div>
+            <div class="nav-item" onclick="switchTab('projects')">
+                <i class="fa-solid fa-laptop-code"></i> Projects
+                <span class="nav-badge" id="badge-projects">0</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('skills')">
+                <i class="fa-solid fa-code"></i> Skills
+                <span class="nav-badge" id="badge-skills">0</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('blogs')">
+                <i class="fa-solid fa-newspaper"></i> Blogs
+                <span class="nav-badge" id="badge-blogs">0</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('certifications')">
+                <i class="fa-solid fa-certificate"></i> Certifications
+                <span class="nav-badge" id="badge-certifications">0</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('websites')">
+                <i class="fa-solid fa-globe"></i> Websites
+                <span class="nav-badge" id="badge-websites">0</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('courses')">
+                <i class="fa-solid fa-graduation-cap"></i> Courses & Licenses
+                <span class="nav-badge" id="badge-courses">0</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('photos')">
+                <i class="fa-solid fa-images"></i> Photos
+                <span class="nav-badge" id="badge-photos">0</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('links')">
+                <i class="fa-solid fa-link"></i> Links & Social
+                <span class="nav-badge" id="badge-links">0</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('contact')">
+                <i class="fa-solid fa-envelope"></i> Inquiries
+                <span class="nav-badge" id="badge-contact" style="background: var(--accent); color:#0f172a;">0</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('ml-tester')">
+                <i class="fa-solid fa-brain"></i> ML NLP Tester
+            </div>
+        </div>
+
+        <!-- Main Content Panes -->
+        <div class="main-content">
+            
+            <!-- PROFILE TAB -->
+            <div class="tab-panel active" id="tab-profile">
+                <div class="panel-header">
+                    <h2>Edit Profile</h2>
+                </div>
+                <div class="card">
+                    <h3 style="margin-bottom: 20px; font-size:1.1rem; color:var(--accent);">
+                        <i class="fa-solid fa-user-pen"></i> About Me
+                    </h3>
+                    <form id="profileForm" onsubmit="saveProfile(event)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="profileBrandName">Logo name</label>
+                                <input type="text" id="profileBrandName" placeholder="Sachin" maxlength="30" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="profileFullName">Full name</label>
+                                <input type="text" id="profileFullName" placeholder="Sachin Burman" maxlength="80" required>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="profileHeroRoles">Animated role text</label>
+                                <input type="text" id="profileHeroRoles" placeholder="Cyber Security Enthusiast, Web Developer" maxlength="300" required>
+                                <small style="color:var(--text-secondary);">Enter multiple roles separated by commas. They appear below your name.</small>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="profileHeroWelcome">Welcome text</label>
+                                <textarea id="profileHeroWelcome" rows="3" maxlength="300" required></textarea>
+                                <small style="color:var(--text-secondary);">This text appears below the animated role.</small>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="profileLogo">Profile logo</label>
+                                <input type="file" id="profileLogo" accept="image/png,image/jpeg,image/webp">
+                                <small id="profileLogoStatus" style="color:var(--text-secondary);">Upload a clear square image for the About Me section.</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="profileAboutTitle">About heading</label>
+                                <input type="text" id="profileAboutTitle" placeholder="UI Designer & Cyber Security Student" maxlength="120" required>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="profileAboutDescription">About description</label>
+                                <textarea id="profileAboutDescription" rows="5" maxlength="1000" required></textarea>
+                            </div>
+                        </div>
+                        <div style="margin-top:20px; display:flex; justify-content:flex-end;">
+                            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save Profile</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 1. PROJECTS TAB -->
+            <div class="tab-panel" id="tab-projects">
+                <div class="panel-header">
+                    <h2>Manage Projects</h2>
+                </div>
+
+                <!-- Add Project Form Card -->
+                <div class="card">
+                    <h3 style="margin-bottom: 20px; font-size:1.1rem; color:var(--accent);">
+                        <i class="fa-solid fa-plus-circle"></i> Add New Project
+                    </h3>
+                    <form id="projectForm" onsubmit="submitProject(event)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Project Title *</label>
+                                <input type="text" id="projTitle" placeholder="e.g. SE-GUARD Threat Detection" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Category (Or leave blank to auto-detect with ML)</label>
+                                <input type="text" id="projCategory" placeholder="e.g. Cyber Security, UI/UX, AI/ML">
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Description *</label>
+                                <textarea id="projDesc" rows="3" placeholder="Describe the project overview, key modules and technical highlights..." required></textarea>
+                                <div style="margin-top: 6px;">
+                                    <button type="button" class="btn-ml" onclick="autoDetectML('projTitle', 'projDesc', 'projCategory', 'projTags')">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Categorize & Tag (ML)
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Tags (Comma-separated)</label>
+                                <input type="text" id="projTags" placeholder="e.g. Python, Volatility, Forensics">
+                            </div>
+                            <div class="form-group">
+                                <label>External URL / Live Link</label>
+                                <input type="url" id="projUrl" placeholder="https://github.com/Sachin8124/...">
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Upload Project Thumbnail / Screenshot</label>
+                                <input type="file" accept="image/*" onchange="handleFileUpload(this, 'projImgUrl')">
+                                <input type="hidden" id="projImgUrl">
+                                <small id="projImgStatus" style="color:var(--text-secondary);"></small>
+                            </div>
+                        </div>
+                        <div style="margin-top: 20px; display:flex; justify-content:flex-end;">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa-solid fa-floppy-disk"></i> Save Project
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Projects Table -->
+                <div class="card">
+                    <h3 style="margin-bottom: 15px; font-size:1.1rem;">Existing Projects</h3>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Title</th>
+                                    <th>Category</th>
+                                    <th>Tags</th>
+                                    <th>Link</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="projectsTableBody">
+                                <tr><td colspan="6" style="text-align:center;">Loading projects...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. SKILLS TAB -->
+            <div class="tab-panel" id="tab-skills">
+                <div class="panel-header">
+                    <h2>Manage Technical Skills</h2>
+                </div>
+                <div class="card">
+                    <h3 style="margin-bottom: 20px; font-size:1.1rem; color:var(--accent);">
+                        <i class="fa-solid fa-plus-circle"></i> Add New Skill
+                    </h3>
+                    <form onsubmit="submitSkill(event)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Skill Name *</label>
+                                <input type="text" id="skillName" placeholder="e.g. Python, Digital Forensics, Figma" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Category</label>
+                                <select id="skillCategory">
+                                    <option value="Web Design">Web Design</option>
+                                    <option value="Cyber Security">Cyber Security</option>
+                                    <option value="Programming">Programming</option>
+                                    <option value="Database">Database</option>
+                                    <option value="Tools">Tools & Forensics</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Proficiency</label>
+                                <select id="skillProficiency">
+                                    <option value="Expert">Expert</option>
+                                    <option value="Advanced">Advanced</option>
+                                    <option value="Intermediate">Intermediate</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>FontAwesome Icon Class</label>
+                                <input type="text" id="skillIcon" placeholder="e.g. fa-brands fa-python, fa-solid fa-fingerprint">
+                            </div>
+                        </div>
+                        <div style="margin-top: 20px; display:flex; justify-content:flex-end;">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa-solid fa-floppy-disk"></i> Save Skill
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card">
+                    <h3 style="margin-bottom: 15px; font-size:1.1rem;">Active Skills</h3>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Icon</th>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Proficiency</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="skillsTableBody">
+                                <tr><td colspan="5" style="text-align:center;">Loading skills...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. BLOGS TAB -->
+            <div class="tab-panel" id="tab-blogs">
+                <div class="panel-header">
+                    <h2>Manage Blog Posts</h2>
+                </div>
+                <div class="card">
+                    <h3 style="margin-bottom: 20px; font-size:1.1rem; color:var(--accent);">
+                        <i class="fa-solid fa-plus-circle"></i> Add New Blog Post
+                    </h3>
+                    <form onsubmit="submitBlog(event)">
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <label>Blog Title *</label>
+                                <input type="text" id="blogTitle" placeholder="e.g. Memory Analysis with Volatility 3" required>
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Summary *</label>
+                                <textarea id="blogSummary" rows="2" placeholder="Brief abstract..." required></textarea>
+                                <div style="margin-top: 6px;">
+                                    <button type="button" class="btn-ml" onclick="autoDetectML('blogTitle', 'blogSummary', 'blogCategory', 'blogTags')">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Categorize with ML
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Category</label>
+                                <input type="text" id="blogCategory" placeholder="e.g. Digital Forensics">
+                            </div>
+                            <div class="form-group">
+                                <label>Tags</label>
+                                <input type="text" id="blogTags" placeholder="Volatility, RAM, Windows">
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Article URL (Medium, Substack, GitHub, etc.)</label>
+                                <input type="url" id="blogUrl" placeholder="https://...">
+                            </div>
+                        </div>
+                        <div style="margin-top: 20px; display:flex; justify-content:flex-end;">
+                            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save Blog</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card">
+                    <h3 style="margin-bottom: 15px; font-size:1.1rem;">Published Blogs</h3>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Category</th>
+                                    <th>Tags</th>
+                                    <th>Link</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="blogsTableBody">
+                                <tr><td colspan="5" style="text-align:center;">Loading blogs...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. CERTIFICATIONS TAB -->
+            <div class="tab-panel" id="tab-certifications">
+                <div class="panel-header">
+                    <h2>Manage Certifications</h2>
+                </div>
+                <div class="card">
+                    <h3 style="margin-bottom: 20px; font-size:1.1rem; color:var(--accent);">
+                        <i class="fa-solid fa-plus-circle"></i> Add Certification
+                    </h3>
+                    <form onsubmit="submitCertification(event)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Certification Title *</label>
+                                <input type="text" id="certTitle" placeholder="e.g. Certified Ethical Hacker (CEH)" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Issuing Authority *</label>
+                                <input type="text" id="certIssuer" placeholder="e.g. EC-Council, Cisco, Google" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Date / Year</label>
+                                <input type="text" id="certDate" placeholder="e.g. 2024">
+                            </div>
+                            <div class="form-group">
+                                <label>Credential URL</label>
+                                <input type="url" id="certUrl" placeholder="https://...">
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="certFile">Certificate File <span style="color:var(--text-secondary); font-weight:400;">(PDF, JPG, PNG or WebP, max 10 MB)</span></label>
+                                <input type="file" id="certFile" accept="application/pdf,image/jpeg,image/png,image/webp">
+                            </div>
+                        </div>
+                        <div style="margin-top: 20px; display:flex; justify-content:flex-end;">
+                            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save Certification</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card">
+                    <h3 style="margin-bottom: 15px; font-size:1.1rem;">Active Certifications</h3>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Issuer</th>
+                                    <th>Year</th>
+                                    <th>Credential</th>
+                                    <th>File</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="certsTableBody">
+                                <tr><td colspan="6" style="text-align:center;">Loading certifications...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. WEBSITES TAB -->
+            <div class="tab-panel" id="tab-websites">
+                <div class="panel-header">
+                    <h2>Manage Deployed Websites</h2>
+                </div>
+                <div class="card">
+                    <h3 style="margin-bottom: 20px; font-size:1.1rem; color:var(--accent);">
+                        <i class="fa-solid fa-plus-circle"></i> Add Deployed Website
+                    </h3>
+                    <form onsubmit="submitWebsite(event)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Website Title *</label>
+                                <input type="text" id="webTitle" placeholder="e.g. Personal Portfolio" required>
+                            </div>
+                            <div class="form-group">
+                                <label>URL *</label>
+                                <input type="url" id="webUrl" placeholder="https://sachinburman.netlify.app" required>
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Description</label>
+                                <textarea id="webDesc" rows="2" placeholder="Overview of the site..."></textarea>
+                            </div>
+                        </div>
+                        <div style="margin-top: 20px; display:flex; justify-content:flex-end;">
+                            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save Website</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>URL</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="websitesTableBody">
+                                <tr><td colspan="3" style="text-align:center;">Loading websites...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. COURSES & LICENSES TAB -->
+            <div class="tab-panel" id="tab-courses">
+                <div class="panel-header">
+                    <h2>Courses & Licenses</h2>
+                </div>
+                <div class="card">
+                    <h3 style="margin-bottom: 20px; font-size:1.1rem; color:var(--accent);">Add Course or License</h3>
+                    <form onsubmit="submitCourse(event)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Title *</label>
+                                <input type="text" id="courseTitle" placeholder="e.g. Computer Forensics Specialization" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Institution *</label>
+                                <input type="text" id="courseInst" placeholder="e.g. Coursera / University" required>
+                            </div>
+                            <div class="form-group">
+                                <label>License / ID</label>
+                                <input type="text" id="courseLic" placeholder="License #">
+                            </div>
+                            <div class="form-group">
+                                <label>Credential URL</label>
+                                <input type="url" id="courseUrl" placeholder="https://...">
+                            </div>
+                        </div>
+                        <div style="margin-top: 20px; display:flex; justify-content:flex-end;">
+                            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Institution</th>
+                                    <th>License #</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="coursesTableBody">
+                                <tr><td colspan="4" style="text-align:center;">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. PHOTOS TAB -->
+            <div class="tab-panel" id="tab-photos">
+                <div class="panel-header">
+                    <h2>Photo Gallery</h2>
+                </div>
+                <div class="card">
+                    <h3 style="margin-bottom: 20px; font-size:1.1rem; color:var(--accent);">Upload Photo</h3>
+                    <form onsubmit="submitPhoto(event)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Title *</label>
+                                <input type="text" id="photoTitle" placeholder="e.g. Cyber Security Workshop" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Caption</label>
+                                <input type="text" id="photoCaption" placeholder="Caption or context">
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Upload Image *</label>
+                                <input type="file" accept="image/*" required onchange="handleFileUpload(this, 'photoImgUrl')">
+                                <input type="hidden" id="photoImgUrl">
+                                <small id="photoImgStatus" style="color:var(--text-secondary);"></small>
+                            </div>
+                        </div>
+                        <div style="margin-top: 20px; display:flex; justify-content:flex-end;">
+                            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-upload"></i> Save Photo</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Preview</th>
+                                    <th>Title</th>
+                                    <th>Caption</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="photosTableBody">
+                                <tr><td colspan="4" style="text-align:center;">Loading photos...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8. LINKS TAB -->
+            <div class="tab-panel" id="tab-links">
+                <div class="panel-header">
+                    <h2>Social & External Links</h2>
+                </div>
+                <div class="card">
+                    <h3 style="margin-bottom: 20px; font-size:1.1rem; color:var(--accent);">Add Link</h3>
+                    <form onsubmit="submitLink(event)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Platform Name *</label>
+                                <input type="text" id="linkPlatform" placeholder="e.g. GitHub, LinkedIn" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Display Title *</label>
+                                <input type="text" id="linkTitle" placeholder="e.g. Sachin Burman" required>
+                            </div>
+                            <div class="form-group">
+                                <label>URL *</label>
+                                <input type="url" id="linkUrl" placeholder="https://..." required>
+                            </div>
+                            <div class="form-group">
+                                <label>Icon Class</label>
+                                <input type="text" id="linkIcon" placeholder="e.g. fa-brands fa-github">
+                            </div>
+                        </div>
+                        <div style="margin-top: 20px; display:flex; justify-content:flex-end;">
+                            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save Link</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Icon</th>
+                                    <th>Platform</th>
+                                    <th>Title</th>
+                                    <th>URL</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="linksTableBody">
+                                <tr><td colspan="5" style="text-align:center;">Loading links...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 9. CONTACT INQUIRIES TAB -->
+            <div class="tab-panel" id="tab-contact">
+                <div class="panel-header">
+                    <h2>Contact Form Inquiries (Inbox)</h2>
+                    <button class="btn btn-secondary" onclick="loadContactMessages()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+                </div>
+                <div class="card">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>From</th>
+                                    <th>Email</th>
+                                    <th>Mobile</th>
+                                    <th>Subject</th>
+                                    <th>Message</th>
+                                    <th>Status</th>
+                                    <th>Response</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="contactTableBody">
+                                <tr><td colspan="9" style="text-align:center;">Loading inquiries...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 10. ML TESTER TAB -->
+            <div class="tab-panel" id="tab-ml-tester">
+                <div class="panel-header">
+                    <h2>Machine Learning NLP Playground</h2>
+                </div>
+                <div class="card">
+                    <p style="color:var(--text-secondary); margin-bottom: 20px;">
+                        Test how the scikit-learn NLP model automatically tags and categorizes any description into <b>Cyber Security</b>, <b>Digital Forensics</b>, <b>Web Design</b>, or <b>AI/ML</b>.
+                    </p>
+                    <div class="form-group">
+                        <label>Enter Title or Description to analyze:</label>
+                        <textarea id="mlTestInput" rows="4" placeholder="e.g. Automated packet inspection script built for live network forensics and Volatility memory dumping"></textarea>
+                    </div>
+                    <button class="btn btn-primary" onclick="testMLPlayground()">
+                        <i class="fa-solid fa-bolt"></i> Run NLP Classification & Tag Extraction
+                    </button>
+
+                    <div id="mlPlaygroundResults" style="display:none; margin-top: 25px; padding: 20px; background:#0b1120; border-radius:10px; border:1px solid var(--border);">
+                        <h4 style="color:var(--accent); margin-bottom: 12px;">ML Prediction Output:</h4>
+                        <p><strong>Predicted Category:</strong> <span id="resCat" class="badge-cat"></span> (Confidence: <span id="resConf"></span>)</p>
+                        <div style="margin: 12px 0;">
+                            <strong>Extracted Technical Tags:</strong>
+                            <div id="resTags" style="display:flex; gap:8px; margin-top:6px; flex-wrap:wrap;"></div>
+                        </div>
+                        <div>
+                            <strong>Class Probabilities:</strong>
+                            <pre id="resScores" style="background:var(--card-bg); padding:10px; border-radius:6px; margin-top:8px; font-size:0.85rem;"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Toast Notification Element -->
+    <div id="toast">Changes Saved Successfully!</div>
+
+    <div id="authGate">
+        <form id="authForm" class="auth-card">
+            <div class="auth-mark"><i class="fa-solid fa-shield-halved"></i></div>
+            <h1 id="authTitle">Owner sign in</h1>
+            <p id="authSubtitle">Public settings for Sachin Burman.</p>
+            <div class="form-group">
+                <label for="authUsername">Owner username</label>
+                <input id="authUsername" type="text" autocomplete="username" required>
+            </div>
+            <div class="form-group">
+                <label for="authPassword">Password</label>
+                <input id="authPassword" type="password" autocomplete="current-password" required>
+            </div>
+            <div id="authNewPasswordGroup" class="form-group" hidden>
+                <label for="authNewPassword">New password</label>
+                <input id="authNewPassword" type="password" autocomplete="new-password" minlength="12">
+            </div>
+            <div id="authConfirmGroup" class="form-group" hidden>
+                <label for="authConfirmPassword">Confirm new password</label>
+                <input id="authConfirmPassword" type="password" autocomplete="new-password">
+            </div>
+            <button class="btn btn-primary" type="submit" style="width:100%; justify-content:center;">
+                <i class="fa-solid fa-arrow-right-to-bracket"></i> <span id="authSubmitText">Continue</span>
+            </button>
+            <div id="authError" class="auth-error" role="alert"></div>
+            <div class="auth-links">
+                <button id="recoveryLink" class="auth-action" type="button" hidden>
+                    <i class="fa-solid fa-key"></i> <span>Create new password</span>
+                </button>
+                <a class="auth-back" href="/" aria-label="Return to Main page">
+                    <i class="fa-solid fa-arrow-left"></i> Return to Main page
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <div id="accountModal" class="modal-overlay">
+        <form id="accountForm" class="modal-card">
+            <div class="panel-header">
+                <h2>Account security</h2>
+                <button type="button" class="btn btn-secondary" onclick="closeAccountModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p style="color:var(--text-secondary); margin-bottom:20px;">Change your password regularly. Passwords expire every 30 days.</p>
+            <div class="form-group">
+                <label for="currentPassword">Current password</label>
+                <input id="currentPassword" type="password" autocomplete="current-password" required>
+            </div>
+            <div class="form-group">
+                <label for="newPassword">New password</label>
+                <input id="newPassword" type="password" minlength="12" autocomplete="new-password" required>
+            </div>
+            <div class="form-group">
+                <label for="confirmNewPassword">Confirm new password</label>
+                <input id="confirmNewPassword" type="password" minlength="12" autocomplete="new-password" required>
+            </div>
+            <button class="btn btn-primary" type="submit"><i class="fa-solid fa-key"></i> Change password</button>
+            <div id="accountError" class="auth-error" role="alert"></div>
+        </form>
+    </div>
+
+    <div id="logoCropModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="logoCropTitle">
+        <div class="modal-card crop-modal-card">
+            <div class="panel-header">
+                <h2 id="logoCropTitle">Crop profile logo</h2>
+                <button type="button" class="btn btn-secondary" id="cancelLogoCrop" aria-label="Cancel logo crop"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p style="color:var(--text-secondary); margin-bottom:20px;">Position the image inside the circle, then adjust the zoom.</p>
+            <canvas id="logoCropCanvas" class="logo-crop-canvas" width="320" height="320" aria-label="Logo crop preview"></canvas>
+            <div class="crop-controls">
+                <i class="fa-solid fa-magnifying-glass-minus" aria-hidden="true"></i>
+                <input id="logoCropZoom" type="range" min="1" max="3" step="0.01" value="1" aria-label="Logo zoom">
+                <i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i>
+            </div>
+            <div class="crop-actions">
+                <button type="button" class="btn btn-secondary" id="resetLogoCrop"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+                <button type="button" class="btn btn-primary" id="applyLogoCrop"><i class="fa-solid fa-check"></i> Apply crop</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const DEFAULT_BACKEND = window.location.protocol === "file:" ? "http://127.0.0.1:8001" : window.location.origin;
+        const API_BASE = `${window.PORTFOLIO_API_BASE || DEFAULT_BACKEND}/api`;
+        const MEDIA_BASE = window.PORTFOLIO_MEDIA_BASE || DEFAULT_BACKEND;
+        const resolveMediaUrl = url => url && url.startsWith("http") ? url : `${MEDIA_BASE}${url || ""}`;
+
+        // Keep the HTTP-only admin session on login and every later API request.
+        const nativeFetch = window.fetch.bind(window);
+        window.fetch = (input, init = {}) => nativeFetch(input, {
+            ...init,
+            credentials: "include"
+        });
+
+        // Toast Helper
+        function showNotification(msg, isError = false) {
+            const toast = document.getElementById("toast");
+            toast.textContent = msg;
+            toast.style.backgroundColor = isError ? "#ef4444" : "var(--accent)";
+            toast.style.color = isError ? "#fff" : "#0f172a";
+            toast.className = "show";
+            setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3200);
+        }
+
+        const PROFILE_STORAGE_KEY = "sachin_portfolio_profile";
+        const DEFAULT_PROFILE = {
+            brandName: "Sachin",
+            fullName: "Sachin Burman",
+            heroRoles: ["Cyber Security Enthusiast", "Web Developer"],
+            heroWelcomeText: "Welcome to my personal portfolio. I build high-quality web UI interfaces with a focus on simplicity, security, and usability.",
+            aboutTitle: "UI Designer & Cyber Security Student",
+            aboutDescription: "I am a passionate Designer and Cyber Security student from Pune, Maharashtra. With a strong focus on web development, UI design, and Digital Forensics, I build intuitive and secure digital experiences. I am constantly expanding my skill set with cutting-edge technologies.",
+            logoUrl: "colored-logo.png"
+        };
+
+        function getProfile() {
+            try {
+                const profile = { ...DEFAULT_PROFILE, ...JSON.parse(localStorage.getItem(PROFILE_STORAGE_KEY) || "{}") };
+                if (!Array.isArray(profile.heroRoles) || profile.heroRoles.join("|") === "Web Developer|UI Designer|Cyber Security Enthusiast") {
+                    profile.heroRoles = DEFAULT_PROFILE.heroRoles;
+                }
+                return profile;
+            } catch {
+                return { ...DEFAULT_PROFILE };
+            }
+        }
+
+        function loadProfile() {
+            const profile = getProfile();
+            document.getElementById("profileBrandName").value = profile.brandName;
+            document.getElementById("profileFullName").value = profile.fullName;
+            document.getElementById("profileHeroRoles").value = profile.heroRoles.join(", ");
+            document.getElementById("profileHeroWelcome").value = profile.heroWelcomeText;
+            document.getElementById("profileAboutTitle").value = profile.aboutTitle;
+            document.getElementById("profileAboutDescription").value = profile.aboutDescription;
+        }
+
+        const logoCropState = {
+            image: null,
+            baseScale: 1,
+            scale: 1,
+            offsetX: 0,
+            offsetY: 0,
+            dragging: false,
+            lastX: 0,
+            lastY: 0
+        };
+        let croppedLogoData = null;
+
+        function drawLogoCrop() {
+            const canvas = document.getElementById("logoCropCanvas");
+            const context = canvas.getContext("2d");
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.fillStyle = "#0b1120";
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            if (!logoCropState.image) return;
+
+            context.save();
+            context.beginPath();
+            context.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, 0, Math.PI * 2);
+            context.clip();
+            context.drawImage(
+                logoCropState.image,
+                logoCropState.offsetX,
+                logoCropState.offsetY,
+                logoCropState.image.width * logoCropState.scale,
+                logoCropState.image.height * logoCropState.scale
+            );
+            context.restore();
+            context.beginPath();
+            context.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2 - 1, 0, Math.PI * 2);
+            context.strokeStyle = "rgba(255,255,255,0.45)";
+            context.lineWidth = 2;
+            context.stroke();
+        }
+
+        function resetLogoCrop() {
+            const canvas = document.getElementById("logoCropCanvas");
+            const image = logoCropState.image;
+            if (!image) return;
+            logoCropState.baseScale = Math.max(canvas.width / image.width, canvas.height / image.height);
+            logoCropState.scale = logoCropState.baseScale;
+            logoCropState.offsetX = (canvas.width - image.width * logoCropState.scale) / 2;
+            logoCropState.offsetY = (canvas.height - image.height * logoCropState.scale) / 2;
+            document.getElementById("logoCropZoom").value = "1";
+            drawLogoCrop();
+        }
+
+        function closeLogoCrop() {
+            document.getElementById("logoCropModal").classList.remove("active");
+            document.getElementById("profileLogo").value = "";
+            logoCropState.image = null;
+        }
+
+        function openLogoCrop(file) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                const image = new Image();
+                image.onload = () => {
+                    logoCropState.image = image;
+                    document.getElementById("logoCropModal").classList.add("active");
+                    resetLogoCrop();
+                };
+                image.onerror = () => showNotification("Could not load that image.", true);
+                image.src = reader.result;
+            };
+            reader.onerror = () => showNotification("Could not read that image.", true);
+            reader.readAsDataURL(file);
+        }
+
+        function applyLogoCrop() {
+            const canvas = document.getElementById("logoCropCanvas");
+            const output = document.createElement("canvas");
+            output.width = 512;
+            output.height = 512;
+            const context = output.getContext("2d");
+            const ratio = output.width / canvas.width;
+            context.drawImage(
+                logoCropState.image,
+                logoCropState.offsetX * ratio,
+                logoCropState.offsetY * ratio,
+                logoCropState.image.width * logoCropState.scale * ratio,
+                logoCropState.image.height * logoCropState.scale * ratio
+            );
+            croppedLogoData = output.toDataURL("image/png");
+            document.getElementById("profileLogoStatus").textContent = "Logo cropped and ready to save.";
+            document.getElementById("logoCropModal").classList.remove("active");
+        }
+
+        function initLogoCropper() {
+            const input = document.getElementById("profileLogo");
+            const canvas = document.getElementById("logoCropCanvas");
+            const zoom = document.getElementById("logoCropZoom");
+            input.addEventListener("change", () => {
+                const file = input.files[0];
+                if (!file) return;
+                if (!file.type.startsWith("image/")) {
+                    input.value = "";
+                    showNotification("Please choose an image file.", true);
+                    return;
+                }
+                if (file.size > 2 * 1024 * 1024) {
+                    input.value = "";
+                    showNotification("Please choose an image smaller than 2 MB.", true);
+                    return;
+                }
+                croppedLogoData = null;
+                openLogoCrop(file);
+            });
+            zoom.addEventListener("input", () => {
+                if (!logoCropState.image) return;
+                logoCropState.scale = logoCropState.baseScale * Number(zoom.value);
+                drawLogoCrop();
+            });
+            canvas.addEventListener("pointerdown", event => {
+                logoCropState.dragging = true;
+                logoCropState.lastX = event.clientX;
+                logoCropState.lastY = event.clientY;
+                canvas.setPointerCapture(event.pointerId);
+            });
+            canvas.addEventListener("pointermove", event => {
+                if (!logoCropState.dragging) return;
+                logoCropState.offsetX += event.clientX - logoCropState.lastX;
+                logoCropState.offsetY += event.clientY - logoCropState.lastY;
+                logoCropState.lastX = event.clientX;
+                logoCropState.lastY = event.clientY;
+                drawLogoCrop();
+            });
+            canvas.addEventListener("pointerup", () => { logoCropState.dragging = false; });
+            canvas.addEventListener("pointercancel", () => { logoCropState.dragging = false; });
+            document.getElementById("resetLogoCrop").addEventListener("click", resetLogoCrop);
+            document.getElementById("cancelLogoCrop").addEventListener("click", closeLogoCrop);
+            document.getElementById("applyLogoCrop").addEventListener("click", applyLogoCrop);
+        }
+
+        function saveProfile(event) {
+            event.preventDefault();
+            const currentProfile = getProfile();
+            const logoInput = document.getElementById("profileLogo");
+            const profile = {
+                ...currentProfile,
+                brandName: document.getElementById("profileBrandName").value.trim(),
+                fullName: document.getElementById("profileFullName").value.trim(),
+                heroRoles: document.getElementById("profileHeroRoles").value
+                    .split(",")
+                    .map(role => role.trim())
+                    .filter(Boolean),
+                heroWelcomeText: document.getElementById("profileHeroWelcome").value.trim(),
+                aboutTitle: document.getElementById("profileAboutTitle").value.trim(),
+                aboutDescription: document.getElementById("profileAboutDescription").value.trim()
+            };
+
+            if (!profile.brandName || !profile.fullName || !profile.heroRoles.length || !profile.heroWelcomeText || !profile.aboutTitle || !profile.aboutDescription) {
+                showNotification("Please complete all profile fields.", true);
+                return;
+            }
+
+            const finishSave = () => {
+                localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
+                showNotification("Profile updated successfully.");
+            };
+
+            if (!logoInput.files.length) {
+                finishSave();
+                return;
+            }
+
+            if (!croppedLogoData) {
+                showNotification("Apply the logo crop before saving.", true);
+                return;
+            }
+            profile.logoUrl = croppedLogoData;
+            finishSave();
+        }
+
+        let authMode = "login";
+
+        function authErrorMessage(data, fallback) {
+            if (Array.isArray(data.detail)) {
+                const messages = data.detail.map(item => item && item.msg).filter(Boolean);
+                if (messages.length) return messages.join(" ");
+            }
+            return typeof data.detail === "string" ? data.detail : fallback;
+        }
+
+        function setAuthMode(mode, username = "") {
+            authMode = mode;
+            const isSetup = mode === "setup";
+            const isExpired = mode === "expired";
+            const isRecovery = mode === "recovery";
+            document.getElementById("authTitle").textContent = isSetup ? "Create owner account" : isExpired ? "Password renewal required" : isRecovery ? "Create new password" : "Owner sign in";
+            document.getElementById("authSubtitle").textContent = isSetup
+                ? "Create the private Sachin Burman admin account. Use a unique password with at least 12 characters."
+                : isExpired
+                    ? "Your monthly password has expired. Confirm your current password and create a new one to continue."
+                    : isRecovery
+                        ? "Verify your current password, then choose a new password for your owner account."
+                    : "Public settings for Sachin Burman.";
+            document.getElementById("authUsername").value = username;
+            document.getElementById("authUsername").readOnly = isExpired;
+            document.getElementById("authPassword").autocomplete = isSetup ? "new-password" : "current-password";
+            document.querySelector('label[for="authPassword"]').textContent = isRecovery ? "Current password" : "Password";
+            document.getElementById("authNewPasswordGroup").hidden = !isRecovery;
+            document.getElementById("authNewPassword").required = isRecovery;
+            document.getElementById("authConfirmGroup").hidden = !(isSetup || isExpired || isRecovery);
+            document.getElementById("authConfirmPassword").required = isSetup || isExpired || isRecovery;
+            document.querySelector('label[for="authConfirmPassword"]').textContent = isRecovery ? "Confirm new password" : "Confirm new password";
+            document.getElementById("authSubmitText").textContent = isSetup ? "Continue" : isExpired ? "Continue" : isRecovery ? "Continue" : "Continue";
+            const recoveryLink = document.getElementById("recoveryLink");
+            recoveryLink.hidden = isSetup;
+            recoveryLink.querySelector("span").textContent = isRecovery ? "Back to sign in" : "Create new password";
+            document.getElementById("authError").textContent = "";
+        }
+
+        async function checkAuth() {
+            try {
+                const response = await fetch(`${API_BASE}/auth/status`);
+                const data = await response.json();
+                if (data.setup_required) {
+                    setAuthMode("setup");
+                } else if (data.authenticated) {
+                    showDashboard(data.username);
+                } else if (data.password_expired) {
+                    setAuthMode("expired", data.username || "");
+                } else {
+                    setAuthMode("login", data.username || "");
+                }
+            } catch {
+                document.getElementById("authError").textContent = "Backend is unavailable. Start the FastAPI server and try again.";
+            }
+        }
+
+        function showDashboard() {
+            checkServerHealth();
+            loadProjects();
+            loadSkills();
+            loadBlogs();
+            loadCertifications();
+            loadWebsites();
+            loadCourses();
+            loadPhotos();
+            loadLinks();
+            loadContactMessages();
+        }
+
+        document.getElementById("authForm").addEventListener("submit", async event => {
+            event.preventDefault();
+            const username = document.getElementById("authUsername").value.trim();
+            const password = document.getElementById("authPassword").value;
+            const newPassword = document.getElementById("authNewPassword").value;
+            const confirmPassword = document.getElementById("authConfirmPassword").value;
+            const error = document.getElementById("authError");
+            error.textContent = "";
+            if ((authMode === "setup" || authMode === "expired") && password !== confirmPassword) {
+                error.textContent = "The passwords do not match.";
+                return;
+            }
+            if (authMode === "recovery" && newPassword !== confirmPassword) {
+                error.textContent = "The new passwords do not match.";
+                return;
+            }
+            const endpoint = authMode === "setup" ? "setup" : authMode === "expired" || authMode === "recovery" ? "rotate-password" : "login";
+            const body = authMode === "setup"
+                ? { username, password }
+                : authMode === "expired" || authMode === "recovery"
+                    ? { current_password: password, new_password: confirmPassword }
+                    : { username, password };
+            try {
+                const headers = { "Content-Type": "application/json" };
+                if (authMode === "expired" || authMode === "recovery") headers["X-Admin-Username"] = username;
+                const response = await fetch(`${API_BASE}/auth/${endpoint}`, { method: "POST", headers, body: JSON.stringify(body) });
+                const data = await response.json().catch(() => ({}));
+                if (!response.ok) throw new Error(authErrorMessage(data, "Authentication failed."));
+                showDashboard(data.username || username);
+            } catch (err) {
+                error.textContent = err.message || "Unable to authenticate. Check your username and password.";
+            }
+        });
+
+        document.getElementById("recoveryLink").addEventListener("click", () => {
+            if (authMode === "recovery") {
+                setAuthMode("login", document.getElementById("authUsername").value.trim());
+            } else {
+                setAuthMode("recovery", document.getElementById("authUsername").value.trim());
+            }
+        });
+
+        async function logoutAdmin() {
+            await fetch(`${API_BASE}/auth/logout`, { method: "POST" }).catch(() => {});
+            window.location.href = "/";
+        }
+
+        function openAccountModal() {
+            document.getElementById("accountModal").classList.add("active");
+            document.getElementById("accountError").textContent = "";
+        }
+
+        function closeAccountModal() {
+            document.getElementById("accountModal").classList.remove("active");
+            document.getElementById("accountForm").reset();
+        }
+
+        document.getElementById("accountForm").addEventListener("submit", async event => {
+            event.preventDefault();
+            const error = document.getElementById("accountError");
+            const newPassword = document.getElementById("newPassword").value;
+            if (newPassword !== document.getElementById("confirmNewPassword").value) {
+                error.textContent = "The new passwords do not match.";
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE}/auth/change-password`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ current_password: document.getElementById("currentPassword").value, new_password: newPassword })
+                });
+                const data = await response.json().catch(() => ({}));
+                if (!response.ok) throw new Error(authErrorMessage(data, "Could not change password."));
+                closeAccountModal();
+                showNotification("Password changed successfully.");
+            } catch (err) {
+                error.textContent = err.message;
+            }
+        });
+
+        // Tab Navigation
+        function switchTab(tabId) {
+            document.querySelectorAll(".nav-item").forEach(item => item.classList.remove("active"));
+            document.querySelectorAll(".tab-panel").forEach(panel => panel.classList.remove("active"));
+
+            const targetNav = Array.from(document.querySelectorAll(".nav-item")).find(el => el.textContent.toLowerCase().includes(tabId.replace("-", " ")));
+            if (targetNav) targetNav.classList.add("active");
+
+            const targetPanel = document.getElementById(`tab-${tabId}`);
+            if (targetPanel) targetPanel.classList.add("active");
+        }
+
+        // Health check & Server Status
+        async function checkServerHealth() {
+            const badge = document.getElementById("backendStatus");
+            const text = document.getElementById("backendStatusText");
+            try {
+                const res = await fetch(`${API_BASE}/health`);
+                if (res.ok) {
+                    badge.classList.remove("offline");
+                    text.textContent = "Backend Live (Port 8001)";
+                } else {
+                    throw new Error();
+                }
+            } catch {
+                badge.classList.add("offline");
+                text.textContent = "Backend Offline";
+            }
+        }
+
+        // Auto ML Tag & Categorize helper for forms
+        async function autoDetectML(titleId, descId, catId, tagsId) {
+            const title = document.getElementById(titleId).value;
+            const desc = document.getElementById(descId).value;
+            if (!title && !desc) {
+                showNotification("Please enter a title or description first!", true);
+                return;
+            }
+            try {
+                const res = await fetch(`${API_BASE}/ml/categorize`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ title, description: desc })
+                });
+                const data = await res.json();
+                if (data.category && document.getElementById(catId)) {
+                    document.getElementById(catId).value = data.category;
+                }
+                if (data.suggested_tags && document.getElementById(tagsId)) {
+                    document.getElementById(tagsId).value = data.suggested_tags.join(", ");
+                }
+                showNotification(`ML Categorized: ${data.category} (${Math.round(data.confidence * 100)}%)`);
+            } catch (err) {
+                showNotification("ML service unavailable.", true);
+            }
+        }
+
+        // File upload helper
+        async function handleFileUpload(input, targetHiddenInputId) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const statusEl = document.getElementById(targetHiddenInputId.replace("Url", "Status"));
+            if (statusEl) statusEl.textContent = "Uploading image...";
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            try {
+                const res = await fetch(`${API_BASE}/upload`, {
+                    method: "POST",
+                    body: formData
+                });
+                if (!res.ok) throw new Error("Upload failed");
+                const data = await res.json();
+                document.getElementById(targetHiddenInputId).value = data.url;
+                if (statusEl) statusEl.textContent = `Uploaded: ${data.filename}`;
+                showNotification("Image uploaded successfully!");
+            } catch (err) {
+                if (statusEl) statusEl.textContent = "Failed to upload image.";
+                showNotification("Image upload failed.", true);
+            }
+        }
+
+        // ==============================================================================
+        // CRUD Operations
+        // ==============================================================================
+
+        // --- PROJECTS ---
+        async function loadProjects() {
+            try {
+                const res = await fetch(`${API_BASE}/projects`);
+                const items = await res.json();
+                document.getElementById("badge-projects").textContent = items.length;
+                const tbody = document.getElementById("projectsTableBody");
+                if (items.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No projects found. Add one above!</td></tr>`;
+                    return;
+                }
+                tbody.innerHTML = items.map(p => `
+                    <tr>
+                        <td>#${p.id}</td>
+                        <td><strong>${escapeHtml(p.title)}</strong></td>
+                        <td><span class="badge-cat">${escapeHtml(p.category)}</span></td>
+                        <td>${(p.tags || "").split(",").map(t => `<span class="tag-pill">${escapeHtml(t.trim())}</span>`).join("")}</td>
+                        <td>${p.external_url ? `<a href="${p.external_url}" target="_blank" style="color:var(--accent);"><i class="fa-solid fa-link"></i></a>` : '-'}</td>
+                        <td>
+                            <button class="btn btn-sm btn-danger" onclick="deleteItem('projects', ${p.id})">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join("");
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        async function submitProject(e) {
+            e.preventDefault();
+            const body = {
+                title: document.getElementById("projTitle").value,
+                category: document.getElementById("projCategory").value || "General",
+                description: document.getElementById("projDesc").value,
+                tags: document.getElementById("projTags").value,
+                external_url: document.getElementById("projUrl").value,
+                image_url: document.getElementById("projImgUrl").value
+            };
+            try {
+                const res = await fetch(`${API_BASE}/projects`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body)
+                });
+                if (res.ok) {
+                    showNotification("Project added successfully!");
+                    document.getElementById("projectForm").reset();
+                    document.getElementById("projImgUrl").value = "";
+                    loadProjects();
+                }
+            } catch (err) {
+                showNotification("Error saving project", true);
+            }
+        }
+
+        // --- SKILLS ---
+        async function loadSkills() {
+            try {
+                const res = await fetch(`${API_BASE}/skills`);
+                const items = await res.json();
+                document.getElementById("badge-skills").textContent = items.length;
+                const tbody = document.getElementById("skillsTableBody");
+                tbody.innerHTML = items.map(s => `
+                    <tr>
+                        <td><i class="${s.icon || 'fa-solid fa-code'}"></i></td>
+                        <td><strong>${escapeHtml(s.name)}</strong></td>
+                        <td><span class="badge-cat">${escapeHtml(s.category)}</span></td>
+                        <td>${escapeHtml(s.proficiency)}</td>
+                        <td>
+                            <button class="btn btn-sm btn-danger" onclick="deleteItem('skills', ${s.id})">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join("");
+            } catch (e) { console.error(e); }
+        }
+
+        async function submitSkill(e) {
+            e.preventDefault();
+            const body = {
+                name: document.getElementById("skillName").value,
+                category: document.getElementById("skillCategory").value,
+                proficiency: document.getElementById("skillProficiency").value,
+                icon: document.getElementById("skillIcon").value || "fa-solid fa-code"
+            };
+            try {
+                const res = await fetch(`${API_BASE}/skills`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body)
+                });
+                if (res.ok) {
+                    showNotification("Skill added!");
+                    e.target.reset();
+                    loadSkills();
+                }
+            } catch (err) { showNotification("Error", true); }
+        }
+
+        // --- BLOGS ---
+        async function loadBlogs() {
+            try {
+                const res = await fetch(`${API_BASE}/blogs`);
+                const items = await res.json();
+                document.getElementById("badge-blogs").textContent = items.length;
+                const tbody = document.getElementById("blogsTableBody");
+                tbody.innerHTML = items.map(b => `
+                    <tr>
+                        <td><strong>${escapeHtml(b.title)}</strong></td>
+                        <td><span class="badge-cat">${escapeHtml(b.category)}</span></td>
+                        <td>${(b.tags || "").split(",").map(t => `<span class="tag-pill">${escapeHtml(t.trim())}</span>`).join("")}</td>
+                        <td>${b.url ? `<a href="${b.url}" target="_blank" style="color:var(--accent);"><i class="fa-solid fa-link"></i></a>` : '-'}</td>
+                        <td>
+                            <button class="btn btn-sm btn-danger" onclick="deleteItem('blogs', ${b.id})">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join("");
+            } catch (e) { console.error(e); }
+        }
+
+        async function submitBlog(e) {
+            e.preventDefault();
+            const body = {
+                title: document.getElementById("blogTitle").value,
+                summary: document.getElementById("blogSummary").value,
+                category: document.getElementById("blogCategory").value || "General",
+                tags: document.getElementById("blogTags").value,
+                url: document.getElementById("blogUrl").value
+            };
+            try {
+                const res = await fetch(`${API_BASE}/blogs`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body)
+                });
+                if (res.ok) {
+                    showNotification("Blog post saved!");
+                    e.target.reset();
+                    loadBlogs();
+                }
+            } catch { showNotification("Error saving blog", true); }
+        }
+
+        // --- CERTIFICATIONS ---
+        async function loadCertifications() {
+            try {
+                const res = await fetch(`${API_BASE}/certifications`);
+                const items = await res.json();
+                document.getElementById("badge-certifications").textContent = items.length;
+                document.getElementById("certsTableBody").innerHTML = items.map(c => `
+                    <tr>
+                        <td><strong>${escapeHtml(c.title)}</strong></td>
+                        <td>${escapeHtml(c.issuer)}</td>
+                        <td>${escapeHtml(c.issue_date || '-')}</td>
+                        <td>${c.credential_url ? `<a href="${escapeHtml(c.credential_url)}" target="_blank" rel="noopener noreferrer" style="color:var(--accent);"><i class="fa-solid fa-certificate"></i></a>` : '-'}</td>
+                        <td>${c.image_url ? `<a href="${escapeHtml(resolveMediaUrl(c.image_url))}" target="_blank" rel="noopener noreferrer" style="color:var(--accent);" title="Open certificate file"><i class="fa-solid fa-file-arrow-up"></i></a>` : '-'}</td>
+                        <td>
+                            <button class="btn btn-sm btn-danger" onclick="deleteItem('certifications', ${c.id})">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join("");
+            } catch (e) { console.error(e); }
+        }
+
+        async function submitCertification(e) {
+            e.preventDefault();
+            const submitButton = e.target.querySelector('button[type="submit"]');
+            const file = document.getElementById("certFile").files[0];
+            if (file && file.size > 10 * 1024 * 1024) {
+                showNotification("Certificate files must be 10 MB or smaller.", true);
+                return;
+            }
+
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
+            try {
+                let imageUrl = "";
+                if (file) {
+                    const uploadData = new FormData();
+                    uploadData.append("file", file);
+                    const uploadRes = await fetch(`${API_BASE}/upload`, { method: "POST", body: uploadData });
+                    const uploadBody = await uploadRes.json().catch(() => ({}));
+                    if (!uploadRes.ok) throw new Error(uploadBody.detail || "Certificate upload failed");
+                    imageUrl = uploadBody.url || "";
+                }
+
+                const res = await fetch(`${API_BASE}/certifications`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        title: document.getElementById("certTitle").value,
+                        issuer: document.getElementById("certIssuer").value,
+                        issue_date: document.getElementById("certDate").value,
+                        credential_url: document.getElementById("certUrl").value,
+                        image_url: imageUrl
+                    })
+                });
+                if (!res.ok) throw new Error("Certification could not be saved");
+                showNotification("Certification added!");
+                e.target.reset();
+                loadCertifications();
+            } catch (error) {
+                showNotification(error.message || "Error saving certification", true);
+            } finally {
+                submitButton.disabled = false;
+                submitButton.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Certification';
+            }
+        }
+
+        // --- WEBSITES ---
+        async function loadWebsites() {
+            const res = await fetch(`${API_BASE}/websites`);
+            const items = await res.json();
+            document.getElementById("badge-websites").textContent = items.length;
+            document.getElementById("websitesTableBody").innerHTML = items.map(w => `
+                <tr>
+                    <td><strong>${escapeHtml(w.title)}</strong></td>
+                    <td><a href="${w.url}" target="_blank" style="color:var(--accent);">${escapeHtml(w.url)}</a></td>
+                    <td>
+                        <button class="btn btn-sm btn-danger" onclick="deleteItem('websites', ${w.id})">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join("");
+        }
+
+        async function submitWebsite(e) {
+            e.preventDefault();
+            const body = {
+                title: document.getElementById("webTitle").value,
+                url: document.getElementById("webUrl").value,
+                description: document.getElementById("webDesc").value
+            };
+            const res = await fetch(`${API_BASE}/websites`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(body)
+            });
+            if (res.ok) {
+                showNotification("Website saved!");
+                e.target.reset();
+                loadWebsites();
+            }
+        }
+
+        // --- COURSES ---
+        async function loadCourses() {
+            const res = await fetch(`${API_BASE}/courses`);
+            const items = await res.json();
+            document.getElementById("badge-courses").textContent = items.length;
+            document.getElementById("coursesTableBody").innerHTML = items.map(c => `
+                <tr>
+                    <td><strong>${escapeHtml(c.title)}</strong></td>
+                    <td>${escapeHtml(c.institution)}</td>
+                    <td>${escapeHtml(c.license_number || '-')}</td>
+                    <td>
+                        <button class="btn btn-sm btn-danger" onclick="deleteItem('courses', ${c.id})">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join("");
+        }
+
+        async function submitCourse(e) {
+            e.preventDefault();
+            const body = {
+                title: document.getElementById("courseTitle").value,
+                institution: document.getElementById("courseInst").value,
+                license_number: document.getElementById("courseLic").value,
+                credential_url: document.getElementById("courseUrl").value
+            };
+            const res = await fetch(`${API_BASE}/courses`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(body)
+            });
+            if (res.ok) {
+                showNotification("Course saved!");
+                e.target.reset();
+                loadCourses();
+            }
+        }
+
+        // --- PHOTOS ---
+        async function loadPhotos() {
+            const res = await fetch(`${API_BASE}/photos`);
+            const items = await res.json();
+            document.getElementById("badge-photos").textContent = items.length;
+            document.getElementById("photosTableBody").innerHTML = items.map(p => `
+                <tr>
+                    <td><img src="${p.image_url.startsWith('http') ? p.image_url : MEDIA_BASE + p.image_url}" style="width:60px;height:40px;object-fit:cover;border-radius:4px;"></td>
+                    <td><strong>${escapeHtml(p.title)}</strong></td>
+                    <td>${escapeHtml(p.caption || '')}</td>
+                    <td>
+                        <button class="btn btn-sm btn-danger" onclick="deleteItem('photos', ${p.id})">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join("");
+        }
+
+        async function submitPhoto(e) {
+            e.preventDefault();
+            const body = {
+                title: document.getElementById("photoTitle").value,
+                caption: document.getElementById("photoCaption").value,
+                image_url: document.getElementById("photoImgUrl").value
+            };
+            const res = await fetch(`${API_BASE}/photos`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(body)
+            });
+            if (res.ok) {
+                showNotification("Photo saved!");
+                e.target.reset();
+                loadPhotos();
+            }
+        }
+
+        // --- LINKS ---
+        async function loadLinks() {
+            const res = await fetch(`${API_BASE}/links`);
+            const items = await res.json();
+            document.getElementById("badge-links").textContent = items.length;
+            document.getElementById("linksTableBody").innerHTML = items.map(l => `
+                <tr>
+                    <td><i class="${l.icon || 'fa-solid fa-link'}"></i></td>
+                    <td><strong>${escapeHtml(l.platform)}</strong></td>
+                    <td>${escapeHtml(l.title)}</td>
+                    <td><a href="${l.url}" target="_blank" style="color:var(--accent);">${escapeHtml(l.url)}</a></td>
+                    <td>
+                        <button class="btn btn-sm btn-danger" onclick="deleteItem('links', ${l.id})">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join("");
+        }
+
+        async function submitLink(e) {
+            e.preventDefault();
+            const body = {
+                platform: document.getElementById("linkPlatform").value,
+                title: document.getElementById("linkTitle").value,
+                url: document.getElementById("linkUrl").value,
+                icon: document.getElementById("linkIcon").value || "fa-solid fa-link"
+            };
+            const res = await fetch(`${API_BASE}/links`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(body)
+            });
+            if (res.ok) {
+                showNotification("Link saved!");
+                e.target.reset();
+                loadLinks();
+            }
+        }
+
+        // --- CONTACT INQUIRIES (INBOX) ---
+        async function loadContactMessages() {
+            const tbody = document.getElementById("contactTableBody");
+            try {
+                const res = await fetch(`${API_BASE}/contact`);
+                if (!res.ok) throw new Error("Contact storage is unavailable");
+                const items = await res.json();
+                document.getElementById("badge-contact").textContent = items.filter(m => m.status === "pending").length;
+                if (items.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;">No inquiries yet.</td></tr>`;
+                    return;
+                }
+                tbody.innerHTML = items.map(m => `
+                    <tr>
+                        <td style="font-size:0.8rem; color:var(--text-secondary);">${new Date(m.created_at).toLocaleDateString()}</td>
+                        <td><strong>${escapeHtml(m.full_name)}</strong></td>
+                        <td><a href="mailto:${escapeHtml(m.email)}" style="color:var(--accent);">${escapeHtml(m.email)}</a></td>
+                        <td>${escapeHtml(m.mobile || '-')}</td>
+                        <td><strong>${escapeHtml(m.subject || 'No Subject')}</strong></td>
+                        <td style="max-width:280px;">${escapeHtml(m.message)}</td>
+                        <td><span style="color:${m.status === 'accepted' ? 'var(--success)' : m.status === 'declined' ? 'var(--danger)' : 'var(--accent)'}; text-transform:capitalize; font-weight:600;">${escapeHtml(m.status)}</span></td>
+                        <td style="max-width:220px;">${escapeHtml(m.admin_response || '-')}</td>
+                        <td>
+                            <button class="btn btn-sm btn-primary" onclick="updateContactMessage(${m.id}, 'accepted')" title="Accept request"><i class="fa-solid fa-check"></i></button>
+                            <button class="btn btn-sm btn-secondary" onclick="updateContactMessage(${m.id}, 'answered')" title="Answer request"><i class="fa-solid fa-reply"></i></button>
+                            <button class="btn btn-sm btn-danger" onclick="updateContactMessage(${m.id}, 'declined')" title="Decline request"><i class="fa-solid fa-xmark"></i></button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteItem('contact', ${m.id})">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join("");
+            } catch (e) {
+                document.getElementById("badge-contact").textContent = "0";
+                if (tbody) {
+                    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--text-secondary);">Contact storage is unavailable. Check Google Drive configuration.</td></tr>`;
+                }
+            }
+        }
+
+        async function updateContactMessage(id, nextStatus) {
+            const responseText = nextStatus === "answered"
+                ? window.prompt("Write your response to this request:", "")
+                : window.prompt(`Optional note for this ${nextStatus} request:`, "");
+            if (responseText === null) return;
+
+            try {
+                const res = await fetch(`${API_BASE}/contact/${id}`, {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        status: nextStatus,
+                        admin_response: responseText.trim() || null
+                    })
+                });
+                if (!res.ok) {
+                    const error = await res.json().catch(() => ({}));
+                    throw new Error(error.detail || "Could not update inquiry");
+                }
+                showNotification(`Inquiry marked as ${nextStatus}.`);
+                loadContactMessages();
+            } catch (e) {
+                showNotification(e.message || "Update request failed.", true);
+            }
+        }
+
+        // Generic Delete Item Handler
+        async function deleteItem(resource, id) {
+            if (!confirm(`Are you sure you want to delete this ${resource.slice(0, -1)}?`)) return;
+
+            try {
+                const res = await fetch(`${API_BASE}/${resource}/${id}`, {
+                    method: "DELETE"
+                });
+                if (res.ok) {
+                    showNotification("Item deleted!");
+                    // Refresh current resource table
+                    if (resource === "projects") loadProjects();
+                    else if (resource === "skills") loadSkills();
+                    else if (resource === "blogs") loadBlogs();
+                    else if (resource === "certifications") loadCertifications();
+                    else if (resource === "websites") loadWebsites();
+                    else if (resource === "courses") loadCourses();
+                    else if (resource === "photos") loadPhotos();
+                    else if (resource === "links") loadLinks();
+                    else if (resource === "contact") loadContactMessages();
+                } else {
+                    showNotification("Could not delete item.", true);
+                }
+            } catch {
+                showNotification("Delete request failed.", true);
+            }
+        }
+
+        // ML NLP Playground Tester
+        async function testMLPlayground() {
+            const text = document.getElementById("mlTestInput").value.trim();
+            if (!text) {
+                showNotification("Enter some text to test!", true);
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/ml/categorize`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ text })
+                });
+                const data = await res.json();
+
+                document.getElementById("resCat").textContent = data.category;
+                document.getElementById("resConf").textContent = `${Math.round(data.confidence * 100)}%`;
+                document.getElementById("resTags").innerHTML = data.suggested_tags.map(t => `<span class="tag-pill">${escapeHtml(t)}</span>`).join("");
+                document.getElementById("resScores").textContent = JSON.stringify(data.category_scores, null, 2);
+                document.getElementById("mlPlaygroundResults").style.display = "block";
+            } catch (err) {
+                showNotification("ML Playground error", true);
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return "";
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Initial Load
+        document.addEventListener("DOMContentLoaded", () => {
+            loadProfile();
+            initLogoCropper();
+            showDashboard();
+            setInterval(() => {
+                checkServerHealth();
+            }, 10000);
+        });
+    </script>
+</body>
+</html>
